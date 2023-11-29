@@ -7,7 +7,9 @@ app = Flask(__name__)
 class Database:
     def listProductNames(self):
         password = os.getenv('DATABASE_PASSWORD')
-        conn = psycopg2.connect("dbname='oryxdb' user='oryxuser' host='dbserver' password='" + password + "'")
+        conn = psycopg2.connect(
+            f"dbname='oryxdb' user='oryxuser' host='dbserver' password='{password}'"
+        )
         try:
             c = conn.cursor()
             c.execute("SELECT Name FROM Products")

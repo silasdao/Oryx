@@ -27,7 +27,5 @@ class Database:
 def listProducts():
     db = Database()
     rows = db.listProductNames()
-    payload = []
-    for row in rows:
-        payload.append({'Name': row[0]})
+    payload = [{'Name': row[0]} for row in rows]
     return jsonify(payload)

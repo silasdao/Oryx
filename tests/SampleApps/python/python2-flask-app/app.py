@@ -13,8 +13,7 @@ def index():
 @app.route('/cities.json')
 def cities():
     data = {"cities" : ["Amsterdam","Berlin","New York","San Francisco","Tokyo"]}
-    resp = Response(json.dumps(data), status=200, mimetype='application/json')
-    return resp
+    return Response(json.dumps(data), status=200, mimetype='application/json')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

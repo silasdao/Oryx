@@ -36,10 +36,10 @@ questionNames = {
 }
 
 def survey_csvname(year):
-    return 'survey{}.csv'.format(year)
+    return f'survey{year}.csv'
 
 def download_survey(year):
-    print("Downloading " + str(year))
+    print(f"Downloading {str(year)}")
     request = requests.get(urls[year])
     with open("survey.zip", "wb") as file:
         file.write(request.content) 
@@ -54,7 +54,7 @@ def download_survey(year):
 def languages_breakdown(year):
     if not os.path.exists(survey_csvname(year)):
         download_survey(year)
-    print("Processing " + str(year))
+    print(f"Processing {str(year)}")
     data=pd.read_csv(survey_csvname(year), encoding='latin1')
 
     if year >= 2016:
@@ -82,9 +82,9 @@ def languages_breakdown(year):
     summary = languages.apply(pd.Series.value_counts)
     summary = pd.DataFrame({'count': summary.sum(axis=1).groupby(lambda x: x.strip()).sum()})
 
-    
+
     total = data[data[questionNames[year]].notnull()].shape[0]
-    
+
     # total needs to account for all columns
     if year < 2016:
         notNull = languages.apply(lambda x: pd.notnull(x)).sum(axis=1)
@@ -95,10 +95,9 @@ def languages_breakdown(year):
     return summary
 
 if __name__ == "__main__":
-    totals = {}
-    for year in range(2011, 2018):
-        totals[year] = languages_breakdown(year).to_dict()
-
+    totals = {
+        year: languages_breakdown(year).to_dict() for year in range(2011, 2018)
+    }
     with open('app/static/data.json', 'w') as file:
         file.write(json.dumps(totals, indent=4, separators=(',', ': ')))
     

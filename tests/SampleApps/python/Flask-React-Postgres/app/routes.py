@@ -45,8 +45,9 @@ def create_user():
 @app.route("/api/get_token", methods=["POST"])
 def get_token():
     incoming = request.get_json()
-    user = User.get_user_with_email_and_password(incoming["email"], incoming["password"])
-    if user:
+    if user := User.get_user_with_email_and_password(
+        incoming["email"], incoming["password"]
+    ):
         return jsonify(token=generate_token(user))
 
     return jsonify(error=True), 403
@@ -55,9 +56,7 @@ def get_token():
 @app.route("/api/is_token_valid", methods=["POST"])
 def is_token_valid():
     incoming = request.get_json()
-    is_valid = verify_token(incoming["token"])
-
-    if is_valid:
+    if is_valid := verify_token(incoming["token"]):
         return jsonify(token_is_valid=True)
     else:
         return jsonify(token_is_valid=False), 403
@@ -95,24 +94,20 @@ def get_tasks_for_user():
 def delete_task():
     incoming = request.get_json()
 
-    success = Task.delete_task(incoming.get('task_id'))
-    if not success:
+    if success := Task.delete_task(incoming.get('task_id')):
+        return jsonify(success=True)
+    else:
         return jsonify(message="Error deleting task"), 409
-
-    return jsonify(success=True)
 
 
 @app.route("/api/edit_task", methods=["POST"])
 @requires_auth
 def edit_task():
     incoming = request.get_json()
-   
-    success = Task.edit_task(
-        incoming.get('task_id'),
-        incoming.get('task'),
-        incoming.get('status')
-    )
-    if not success:
-        return jsonify(message="Error editing task"), 409
 
-    return jsonify(success=True)
+    if success := Task.edit_task(
+        incoming.get('task_id'), incoming.get('task'), incoming.get('status')
+    ):
+        return jsonify(success=True)
+    else:
+        return jsonify(message="Error editing task"), 409

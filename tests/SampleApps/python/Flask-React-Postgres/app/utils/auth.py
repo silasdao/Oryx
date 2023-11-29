@@ -10,13 +10,14 @@ SECRET_KEY = app.config['SECRET_KEY']
 
 def generate_token(user, expiration=TWO_WEEKS):
     s = Serializer(SECRET_KEY, expires_in=expiration)
-    token = s.dumps({
-        'id': user.id,
-        'email': user.email,
-        'first_name': user.first_name,
-        'last_name': user.last_name
-    }).decode('utf-8')
-    return token
+    return s.dumps(
+        {
+            'id': user.id,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }
+    ).decode('utf-8')
 
 
 def verify_token(token):

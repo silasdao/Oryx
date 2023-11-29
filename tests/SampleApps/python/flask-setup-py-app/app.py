@@ -5,5 +5,5 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello World! " + str(datetime.now())
+    return f"Hello World! {str(datetime.now())}"
 

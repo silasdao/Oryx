@@ -12,8 +12,7 @@ app.app_context().push()
 
 
 def _set_task_progress(progress):
-    job = get_current_job()
-    if job:
+    if job := get_current_job():
         job.meta['progress'] = progress
         job.save_meta()
         task = Task.query.get(job.get_id())
@@ -29,13 +28,10 @@ def export_posts(user_id):
         user = User.query.get(user_id)
         _set_task_progress(0)
         data = []
-        i = 0
         total_posts = user.posts.count()
-        for post in user.posts.order_by(Post.timestamp.asc()):
-            data.append({'body': post.body,
-                         'timestamp': post.timestamp.isoformat() + 'Z'})
+        for i, post in enumerate(user.posts.order_by(Post.timestamp.asc()), start=1):
+            data.append({'body': post.body, 'timestamp': f'{post.timestamp.isoformat()}Z'})
             time.sleep(5)
-            i += 1
             _set_task_progress(100 * i // total_posts)
 
         send_email('[Microblog] Your blog posts',

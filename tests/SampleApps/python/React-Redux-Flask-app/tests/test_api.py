@@ -56,9 +56,9 @@ class TestAPI(BaseTestConfig):
         self.assertTrue(json.loads(res2.data.decode("utf-8")), ["token_is_valid"])
 
         res3 = self.app.post(
-                "/api/is_token_valid",
-                data=json.dumps({"token": token + "something-else"}),
-                content_type='application/json'
+            "/api/is_token_valid",
+            data=json.dumps({"token": f"{token}something-else"}),
+            content_type='application/json',
         )
 
         self.assertEqual(res3.status_code, 403)
@@ -76,9 +76,7 @@ class TestAPI(BaseTestConfig):
             'Authorization': self.token,
         }
 
-        bad_headers = {
-            'Authorization': self.token + "bad",
-        }
+        bad_headers = {'Authorization': f"{self.token}bad"}
 
         response = self.app.get('/api/user', headers=headers)
         self.assertEqual(response.status_code, 200)

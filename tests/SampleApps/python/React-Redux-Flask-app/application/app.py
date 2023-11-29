@@ -46,8 +46,9 @@ def create_user():
 @app.route("/api/get_token", methods=["POST"])
 def get_token():
     incoming = request.get_json()
-    user = User.get_user_with_email_and_password(incoming["email"], incoming["password"])
-    if user:
+    if user := User.get_user_with_email_and_password(
+        incoming["email"], incoming["password"]
+    ):
         return jsonify(token=generate_token(user))
 
     return jsonify(error=True), 403
@@ -56,9 +57,7 @@ def get_token():
 @app.route("/api/is_token_valid", methods=["POST"])
 def is_token_valid():
     incoming = request.get_json()
-    is_valid = verify_token(incoming["token"])
-
-    if is_valid:
+    if is_valid := verify_token(incoming["token"]):
         return jsonify(token_is_valid=True)
     else:
         return jsonify(token_is_valid=False), 403
